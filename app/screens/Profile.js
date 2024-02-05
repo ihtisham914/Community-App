@@ -2,9 +2,9 @@ import React from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import BreadCrumb from './../components/BreadCrumb';
 
-const Complaints = () => {
+const Profile = () => {
     return (
-        <View style={Styles.container}><BreadCrumb screen='Home' title='Complaints' /></View>
+        <View style={Styles.container}><BreadCrumb screen='Home' title='Profile' /></View>
     )
 }
 const Styles = StyleSheet.create({
@@ -13,4 +13,4 @@ const Styles = StyleSheet.create({
     },
 })
 
-export default Complaints
+export default Profile

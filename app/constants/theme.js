@@ -20,7 +20,6 @@ const COLORS = {
     completedColor: "#6AD616",
     feedbackColor: "#1A5980",
     closedColor: "#D43434",
-
 };
 
 const FONT = {

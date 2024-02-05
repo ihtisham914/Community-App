@@ -1,4 +1,4 @@
-import TabNavigation from "./Navigator/TabNavigation";
+import TabNavigation from "./app/Navigator/TabNavigation";
 import './Global.css'
 
 

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput } from 'reac
 import { useNavigation } from '@react-navigation/native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { FontAwesome6 } from '@expo/vector-icons';
-import { SIZES, COLORS, FONT, SHADOWS } from '../../constants/theme';
+import { SIZES, COLORS, FONT, SHADOWS } from '../constants/theme';
 
 const SignUP = () => {
     const navigation = useNavigation();
