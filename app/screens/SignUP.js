@@ -20,15 +20,17 @@ const SignUP = () => {
         { label: 'Kohat', value: 'Kohat' },
     ];
 
-    const signUp = () => {
+    const signUP = async () => {
         if (name == '' || phone == '' || password == '' || confirmPass == '' || city == '') {
             return;
+        } else if (password !== confirmPass) {
+
+
         } else {
             // api call
 
 
             // redirect to login screen
-
         }
     }
 

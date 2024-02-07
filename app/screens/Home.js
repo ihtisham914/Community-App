@@ -1,5 +1,5 @@
 import React from 'react'
-import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { COLORS, SHADOWS, SIZES } from '../constants/theme'
 import { MaterialIcons } from '@expo/vector-icons'
 import { complaints_types } from './../../assets/data/complaintTypes';

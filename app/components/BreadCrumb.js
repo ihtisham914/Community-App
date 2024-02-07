@@ -18,11 +18,11 @@ const BreadCrumb = ({ screen, title }) => {
 
 const Styles = StyleSheet.create({
     breadCrumb: {
-        margin: 12,
         width: '100%',
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'space-between'
+        justifyContent: 'space-between',
+        marginBottom: 14,
     },
     breadHeading: {
         fontSize: SIZES.medium,

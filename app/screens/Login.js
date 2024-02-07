@@ -1,25 +1,52 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { Dropdown } from 'react-native-element-dropdown';
-import { FontAwesome6 } from '@expo/vector-icons';
 import { SIZES, COLORS, FONT, SHADOWS } from '../constants/theme';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+export const API = axios.create({ baseURL: 'https://bb69-2407-d000-503-bdb2-8827-74e7-4dc5-c592.ngrok-free.app' });
 
 const Login = () => {
     const navigation = useNavigation();
     const [phone, setPhone] = useState();
     const [password, setPassword] = useState('');
+    const [user, setUser] = useState();
+    const [wssc, setWssc] = useState();
+    const [token, setToken] = useState();
 
 
-    const logIn = () => {
-        if (name == '' || phone == '' || password == '' || confirmPass == '' || city == '') {
+    const logIn = async () => {
+        if (phone == '' || password == '') {
             return;
         } else {
             // api call
+            try {
+                const res = await API.post('/api/v1/auth/signin', { phone, password });
+                setUser(res.data.user);
+                setWssc(res.data.WSSC);
+                setToken(res.data.token);
+                await AsyncStorage.setItem('user', JSON.stringify(user));
+                await AsyncStorage.setItem('wssc', JSON.stringify(wssc));
+                await AsyncStorage.setItem('token', JSON.stringify(token));
+                Alert.alert('Success', "Login successfull 🎉")
+                navigation.navigate('TabNavigator', { screen: 'Home' });
 
+            } catch (error) {
+                Alert.alert('Success', `${error}`);
+                if (error.response) {
+                    if (error.response.status == 404) {
+                        Alert.alert('Error', "User not found 😔")
+                    } else if (error.response.status == 400) {
+                        Alert.alert('Error', "Incorrect phone or password")
+                    } else {
+                        Alert.alert('Error', "Something went wrong 😟")
+                    }
+                }
+            }
 
-            // redirect to login screen
-
+            // redirect to Home screen
         }
     }
 
@@ -35,8 +62,7 @@ const Login = () => {
                 <TextInput style={Styles.input} placeholder='Enter Password' keyboardType='ascii-capable' onChangeText={(value) => setPassword(value)} />
 
             </View>
-            <TouchableOpacity style={Styles.btn} onPress={() => navigation.navigate('Home'
-            )}><Text style={Styles.btnText}>Login</Text></TouchableOpacity>
+            <TouchableOpacity style={Styles.btn} onPress={logIn}><Text style={Styles.btnText} >Login</Text></TouchableOpacity>
             <View style={Styles.linkContainer}>
                 <Text>Already have an account?</Text>
                 <Text style={Styles.link} onPress={() => navigation.navigate("SignUp")}> Sign Up</Text>
