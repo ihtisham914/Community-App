@@ -50,9 +50,9 @@ const Complaints = () => {
     return (
         <View style={Styles.container}>
             <BreadCrumb screen='H0ome' title='Complaints' />
-            {!loading ? <FlatList data={complaintsAll} renderItem={({ item }) => <ComplaintCard complaint={item} />} refreshControl={
+            {!loading ? <FlatList data={complaintsAll} renderItem={({ item, index }) => <ComplaintCard complaint={item} index={index} />} refreshControl={
                 <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            } contentContainerStyle={{ rowGap: 10, marginVertical: 20, alignItems: 'center' }} /> :
+            } contentContainerStyle={{ rowGap: 10, marginVertical: 20, alignItems: 'center' }} showsVerticalScrollIndicator={false} /> :
                 <Loader />}
         </View>
     )

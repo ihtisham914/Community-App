@@ -19,20 +19,7 @@ const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
     const token = useSelector((state) => state.app.token)
-    // const [token, setToken] = useState(null);
 
-    // const getToken = async () => {
-    //     try {
-    //         const storedToken = await AsyncStorage.getItem('token');
-    //         const token = JSON.parse(storedToken);
-    //         setToken(token);
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
-    // useEffect(() => {
-    //     getToken();
-    // }, [token])
     return (
         <NavigationContainer>
             <Stack.Navigator>

@@ -22,11 +22,11 @@ const Home = () => {
                 <Text style={Styles.divider}></Text>
                 <MaterialIcons name='keyboard-arrow-right' size={35} color={COLORS.primary} />
             </View>
-            <Text style={Styles.heading}>Please choose compliant type</Text>
+            <Text style={Styles.heading}>Please choose complaint type</Text>
             <FlatList
                 numColumns={2}
                 data={complaints_types}
-                renderItem={({ item }) => <ComplaintTypeItem complaintType={item} />}
+                renderItem={({ item, index }) => <ComplaintTypeItem complaintType={item} index={index} />}
                 columnWrapperStyle={{ justifyContent: 'space-between' }}
                 contentContainerStyle={{ columnGap: 50, alignItems: 'center', marginVertical: 20, flexGrow: 1 }}
             />

@@ -1,19 +1,20 @@
 import React from 'react'
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native'
-import { COLORS, SHADOWS } from '../constants/theme'
+import { Text, StyleSheet, Image, TouchableOpacity, Dimensions } from 'react-native'
+import { SHADOWS } from '../constants/theme'
+import * as Animatable from 'react-native-animatable'
 
 
 const { width } = Dimensions.get('window');
-const itemWidth = (width - 30) / 2; // Adjust padding/margins as needed
+const itemWidth = (width - 30) / 2;
 
-const ComplaintTypeItem = ({ complaintType }) => {
+const ComplaintTypeItem = ({ complaintType, index }) => {
 
     return (
-        <TouchableOpacity style={[Styles.container, complaintType.id == 5 && Styles.centeredItem]}>
+        <Animatable.View animation="zoomIn" duration={1000} delay={100 * index} style={[Styles.container, complaintType.id == 5 && Styles.centeredItem]}>
             <Image style={Styles.img} source={complaintType.img} />
             <Text style={Styles.text}>{complaintType.name}</Text>
             <Text style={Styles.text}>{complaintType.urdu}</Text>
-        </TouchableOpacity>
+        </Animatable.View>
     )
 }
 
