@@ -9,7 +9,7 @@ const BreadCrumb = ({ screen, title }) => {
     return (
         <View style={Styles.breadCrumb}>
             <FontAwesome5 name='arrow-circle-left' size={30} color={COLORS.gray}
-                onPress={() => navigatation.navigate(screen)} />
+                onPress={() => navigatation.goBack()} />
             <Text style={Styles.breadHeading}>{title}</Text>
             <Text></Text>
         </View>
@@ -22,7 +22,7 @@ const Styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        marginBottom: 14,
+        marginBottom: 12,
     },
     breadHeading: {
         fontSize: SIZES.medium,

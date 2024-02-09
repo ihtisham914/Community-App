@@ -29,11 +29,11 @@ const ComplaintCard = ({ complaint }) => {
                 </View>
                 <View style={Styles.infoContainer}>
                     <Text style={Styles.infoKey}>Submitted On:</Text>
-                    <Text style={Styles.infoValue}>{moment(complaint.createdAt).format('Do MMM YYYY')}</Text>
+                    <Text style={Styles.infoValue}>{moment(complaint.createdAt).format('Do MMM YY')}</Text>
                 </View>
                 <View style={Styles.infoContainer}>
                     <Text style={Styles.infoKey}>Address:</Text>
-                    <Text style={Styles.infoValue}>{complaint.complaintAddress.length > 18 ? `${complaint?.complaintAddress?.slice(0, 18)}...` : `${complaint.complaintAddress}`}</Text>
+                    <Text style={Styles.infoValue}>{complaint.complaintAddress.length > 14 ? `${complaint?.complaintAddress?.slice(0, 14)}...` : `${complaint.complaintAddress}`}</Text>
                 </View>
             </View>
             {complaint.ImageUrl ? <Image style={Styles.img} source={{ uri: complaint.ImageUrl }} /> : <Image style={Styles.img} source={complaintDummy} />}
@@ -44,7 +44,7 @@ const Styles = StyleSheet.create({
     complaint: (status) => ({
         flexDirection: 'row',
         gap: 20,
-        width: '100%',
+        width: '97%',
         backgroundColor: 'white',
         borderRadius: 14,
         padding: 18,

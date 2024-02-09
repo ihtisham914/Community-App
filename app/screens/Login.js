@@ -1,52 +1,67 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Alert, ToastAndroid } from 'react-native';
 import { SIZES, COLORS, FONT, SHADOWS } from '../constants/theme';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useDispatch } from 'react-redux';
+import { SetUserData } from '../GlobalState/UserSlice';
+import { Feather } from '@expo/vector-icons';
 
+export const API = axios.create({ baseURL: 'https://1f6a-2407-d000-503-d50e-c892-7195-63c0-10f2.ngrok-free.app' });
 
-export const API = axios.create({ baseURL: 'https://bb69-2407-d000-503-bdb2-8827-74e7-4dc5-c592.ngrok-free.app' });
-
-const Login = () => {
-    const navigation = useNavigation();
+const Login = ({ navigation }) => {
+    const dispatch = useDispatch()
+    const [loading, setLoading] = useState(false);
     const [phone, setPhone] = useState();
     const [password, setPassword] = useState('');
-    const [user, setUser] = useState();
-    const [wssc, setWssc] = useState();
-    const [token, setToken] = useState();
-
 
     const logIn = async () => {
         if (phone == '' || password == '') {
             return;
         } else {
             // api call
+            setLoading(true)
             try {
                 const res = await API.post('/api/v1/auth/signin', { phone, password });
-                setUser(res.data.user);
-                setWssc(res.data.WSSC);
-                setToken(res.data.token);
-                await AsyncStorage.setItem('user', JSON.stringify(user));
-                await AsyncStorage.setItem('wssc', JSON.stringify(wssc));
-                await AsyncStorage.setItem('token', JSON.stringify(token));
-                Alert.alert('Success', "Login successfull 🎉")
-                navigation.navigate('TabNavigator', { screen: 'Home' });
+                await AsyncStorage.setItem('user', JSON.stringify(res.data.user));
+                await AsyncStorage.setItem('wssc', JSON.stringify(res.data.WSSC));
+                await AsyncStorage.setItem('token', JSON.stringify(res.data.token));
+                dispatch(SetUserData({ user: res.data.user, wssc: res.data.WSSC, token: res.data.token }))
+                setLoading(false);
+                ToastAndroid.showWithGravity(
+                    'Welcome to the app 🎉',
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER,
+                );
+
 
             } catch (error) {
-                Alert.alert('Success', `${error}`);
+                // Alert.alert('Success', `${error}`);
+                setLoading(false)
                 if (error.response) {
                     if (error.response.status == 404) {
-                        Alert.alert('Error', "User not found 😔")
+                        ToastAndroid.showWithGravity(
+                            'User not found 😔',
+                            ToastAndroid.SHORT,
+                            ToastAndroid.CENTER,
+                        );
                     } else if (error.response.status == 400) {
-                        Alert.alert('Error', "Incorrect phone or password")
+                        ToastAndroid.showWithGravity(
+                            'Incorrect phone or password',
+                            ToastAndroid.SHORT,
+                            ToastAndroid.CENTER,
+                        );
                     } else {
-                        Alert.alert('Error', "Something went wrong 😟")
+                        ToastAndroid.showWithGravity(
+                            'Something went wrong 😟',
+                            ToastAndroid.SHORT,
+                            ToastAndroid.CENTER,
+                        );
                     }
                 }
             }
 
-            // redirect to Home screen
+
         }
     }
 
@@ -62,7 +77,11 @@ const Login = () => {
                 <TextInput style={Styles.input} placeholder='Enter Password' keyboardType='ascii-capable' onChangeText={(value) => setPassword(value)} />
 
             </View>
-            <TouchableOpacity style={Styles.btn} onPress={logIn}><Text style={Styles.btnText} >Login</Text></TouchableOpacity>
+            <TouchableOpacity style={Styles.btn} onPress={logIn}>
+                {
+                    !loading ? <Text style={Styles.btnText} >Login</Text> : <Feather style={Styles.icon} name="loader" size={28} color='#fff' />
+                }
+            </TouchableOpacity>
             <View style={Styles.linkContainer}>
                 <Text>Already have an account?</Text>
                 <Text style={Styles.link} onPress={() => navigation.navigate("SignUp")}> Sign Up</Text>

@@ -1,38 +1,28 @@
-import React, { useEffect, useState } from 'react'
-import { Alert, SafeAreaView, TouchableOpacity } from 'react-native'
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, ToastAndroid } from 'react-native'
 import { FontAwesome6 } from '@expo/vector-icons'
 import { COLORS, SIZES } from '../constants/theme'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { useNavigation } from '@react-navigation/native'
-import { Touchable } from 'react-native'
+// import { useNavigation } from '@react-navigation/native'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { useDispatch, useSelector } from 'react-redux'
+import { LogOut } from '../GlobalState/UserSlice'
 
 const Header = () => {
-    const [user, setUser] = useState();
-    const [wssc, setWssc] = useState();
-    const navigation = useNavigation()
-    const getUser = async () => {
-        try {
-            const storedWssc = await AsyncStorage.getItem('wssc');
-            const wssc = JSON.parse(storedWssc);
-            setWssc(wssc);
-            const storedUser = await AsyncStorage.getItem('user');
-            const user = JSON.parse(storedUser);
-            setUser(user);
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    useEffect(() => {
-        getUser();
-    }, [])
+    const dispatch = useDispatch()
+    const { wssc, user } = useSelector((state) => state.app)
 
     const logOut = () => {
-        Alert.alert("success", "Logout successfull")
         AsyncStorage.removeItem('user');
         AsyncStorage.removeItem('wssc');
         AsyncStorage.removeItem('token');
-        navigation.navigate('Login');
+        dispatch(LogOut())
+
+        ToastAndroid.showWithGravity(
+            'Logged out successfully',
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER,
+        );
     }
     return (
         user && wssc && <SafeAreaView style={Styles.container}>
@@ -52,7 +42,6 @@ const Header = () => {
 
 const Styles = StyleSheet.create({
     container: {
-        paddingTop: 40,
         paddingBottom: 10,
         backgroundColor: "#fff",
         paddingRight: 12,

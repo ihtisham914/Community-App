@@ -23,13 +23,11 @@ const Styles = StyleSheet.create({
         borderRadius: 20,
         paddingBottom: 10,
         marginBottom: 20,
-        // borderColor: COLORS.gray2,
-        // borderWidth: 1,
         backgroundColor: "#fff",
         ...SHADOWS.medium
     },
     img: {
-        height: 100,
+        height: 90,
         width: '100%',
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,

@@ -12,25 +12,27 @@ import Header from '../components/Header';
 import SignUP from '../screens/SignUP';
 import { COLORS } from '../constants/theme';
 import SingleComplaint from '../screens/SingleComplaint';
+import { useSelector } from 'react-redux';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const TabNavigation = () => {
-    const [token, setToken] = useState(null);
+    const token = useSelector((state) => state.app.token)
+    // const [token, setToken] = useState(null);
 
-    const getToken = async () => {
-        try {
-            const storedToken = await AsyncStorage.getItem('token');
-            const token = JSON.parse(storedToken);
-            setToken(token);
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    useEffect(() => {
-        getToken();
-    }, [token])
+    // const getToken = async () => {
+    //     try {
+    //         const storedToken = await AsyncStorage.getItem('token');
+    //         const token = JSON.parse(storedToken);
+    //         setToken(token);
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
+    // useEffect(() => {
+    //     getToken();
+    // }, [token])
     return (
         <NavigationContainer>
             <Stack.Navigator>
@@ -43,9 +45,6 @@ const TabNavigation = () => {
                                 header: (props) => <Header {...props} />,
                             }}
                         />
-                        <Stack.Screen name='SingleComplaint' component={SingleComplaint} options={{
-                            header: (props) => <Header {...props} />,
-                        }} />
                     </Stack.Group>
                 ) : (
                     <Stack.Group>
@@ -98,6 +97,16 @@ const TabNavigator = () => {
             <Tab.Screen name='Home' component={Home} options={{ headerShown: false }} />
             <Tab.Screen name='Complaints' component={Complaints} options={{ headerShown: false }} />
             <Tab.Screen name='Profile' component={Profile} options={{ headerShown: false }} />
+            <Tab.Screen
+                name="SingleComplaint"
+                component={SingleComplaint}
+                options={{
+                    headerShown: false,
+                    tabBarIcon: () => null, // Hide the icon
+                    tabBarLabel: () => null, // Hide the label
+                    tabBarButton: () => null, // Hide the entire tab button
+                }}
+            />
         </Tab.Navigator>
     );
 };

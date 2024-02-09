@@ -39,6 +39,7 @@ const Styles = StyleSheet.create({
         margin: 12,
     },
     tabsContainer: {
+        marginTop: 4,
         flexDirection: 'row',
         borderRadius: 30,
         backgroundColor: 'white',

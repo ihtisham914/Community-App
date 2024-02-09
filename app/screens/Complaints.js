@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Image, FlatList, Alert } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { View, StyleSheet, FlatList, Alert, RefreshControl } from 'react-native'
 import BreadCrumb from './../components/BreadCrumb';
 import ComplaintCard from '../components/ComplaintCard';
 import { API } from './Login';
@@ -10,6 +10,14 @@ import Loader from '../components/Loader';
 const Complaints = () => {
     const [complaintsAll, setComplaintsAll] = useState(null);
     const [loading, setLoading] = useState(true)
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        setTimeout(() => {
+            setRefreshing(false)
+        }, 2000)
+    }, [])
     const getComplaints = async () => {
         try {
             const storedToken = await AsyncStorage.getItem('token');
@@ -28,7 +36,11 @@ const Complaints = () => {
 
         } catch (error) {
             setLoading(false)
-            Alert.alert('Error', `${error}`)
+            ToastAndroid.showWithGravity(
+                'Something went wrong!',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+            );
         }
     }
 
@@ -37,8 +49,10 @@ const Complaints = () => {
     }, [])
     return (
         <View style={Styles.container}>
-            <BreadCrumb screen='Home' title='Complaints' />
-            {!loading ? <FlatList data={complaintsAll} renderItem={({ item }) => <ComplaintCard complaint={item} />} contentContainerStyle={{ rowGap: 10, marginVertical: 20 }} /> :
+            <BreadCrumb screen='H0ome' title='Complaints' />
+            {!loading ? <FlatList data={complaintsAll} renderItem={({ item }) => <ComplaintCard complaint={item} />} refreshControl={
+                <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            } contentContainerStyle={{ rowGap: 10, marginVertical: 20, alignItems: 'center' }} /> :
                 <Loader />}
         </View>
     )
