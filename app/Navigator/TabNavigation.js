@@ -13,6 +13,7 @@ import SignUP from '../screens/SignUP';
 import { COLORS } from '../constants/theme';
 import SingleComplaint from '../screens/SingleComplaint';
 import { useSelector } from 'react-redux';
+import FileComplaint from '../screens/FileComplaint';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -87,6 +88,16 @@ const TabNavigator = () => {
             <Tab.Screen
                 name="SingleComplaint"
                 component={SingleComplaint}
+                options={{
+                    headerShown: false,
+                    tabBarIcon: () => null, // Hide the icon
+                    tabBarLabel: () => null, // Hide the label
+                    tabBarButton: () => null, // Hide the entire tab button
+                }}
+            />
+            <Tab.Screen
+                name="FileComplaint"
+                component={FileComplaint}
                 options={{
                     headerShown: false,
                     tabBarIcon: () => null, // Hide the icon

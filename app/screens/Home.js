@@ -31,7 +31,7 @@ const Home = () => {
                 data={complaints_types}
                 renderItem={({ item, index }) => <ComplaintTypeItem complaintType={item} index={index} />}
                 columnWrapperStyle={{ justifyContent: 'space-between' }}
-                contentContainerStyle={{ columnGap: 50, alignItems: 'center', marginVertical: 20, flexGrow: 1 }}
+                contentContainerStyle={{ columnGap: 50, alignItems: 'start', marginVertical: 20, flexGrow: 1 }}
             />
         </View>
     )
