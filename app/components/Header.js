@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, Image, ToastAndroid } from 'react-native'
 import { FontAwesome6 } from '@expo/vector-icons'
 import { COLORS, SIZES } from '../constants/theme'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-// import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
 import { LogOut } from '../GlobalState/UserSlice'
+import { FontAwesome } from '@expo/vector-icons'
 
 const Header = () => {
     const dispatch = useDispatch()
@@ -31,9 +31,11 @@ const Header = () => {
                 <Text style={Styles.logoName}>{wssc.shortname}</Text>
             </View>
             <View style={Styles.iconContainer}>
-                <FontAwesome6 name="bell" size={30} color={COLORS.feedbackColor} />
+                <FontAwesome6 name="bell" size={25} color={COLORS.feedbackColor} />
                 <TouchableOpacity onPress={logOut}>
-                    <Image style={Styles.img} source={{ uri: user.profile_image }} />
+                    {
+                        user.profile_image ? <Image style={Styles.img} source={{ uri: user.profile_image }} /> : <FontAwesome name='user-circle' size={35} color={COLORS.primary} />
+                    }
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

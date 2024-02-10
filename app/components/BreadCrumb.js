@@ -11,7 +11,7 @@ const BreadCrumb = ({ screen, title }) => {
             <FontAwesome5 name='arrow-circle-left' size={30} color={COLORS.gray}
                 onPress={() => navigatation.goBack()} />
             <Text style={Styles.breadHeading}>{title}</Text>
-            <Text></Text>
+            <Text style={Styles.blank}></Text>
         </View>
     )
 }
@@ -31,6 +31,9 @@ const Styles = StyleSheet.create({
         paddingVertical: 4,
         paddingHorizontal: 12,
         borderRadius: 6,
+    },
+    blank: {
+        width: 32,
     }
 })
 

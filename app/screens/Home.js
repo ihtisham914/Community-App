@@ -4,12 +4,15 @@ import { COLORS, SHADOWS, SIZES } from '../constants/theme'
 import { MaterialIcons } from '@expo/vector-icons'
 import { complaints_types } from './../../assets/data/complaintTypes';
 import ComplaintTypeItem from '../components/ComplaintTypeItem';
+import { useNavigation } from '@react-navigation/native';
 
 
 const Home = () => {
+    const navigation = useNavigation()
+
     return (
         <View style={Styles.container}>
-            <View style={Styles.tabsContainer}>
+            <View style={Styles.tabsContainer} >
                 <TouchableOpacity style={Styles.tab}>
                     <Text style={Styles.tabNumber}>02</Text>
                     <Text style={Styles.tabString}>Pending</Text>
@@ -20,7 +23,7 @@ const Home = () => {
                     <Text style={Styles.tabString}>All Complaints</Text>
                 </TouchableOpacity>
                 <Text style={Styles.divider}></Text>
-                <MaterialIcons name='keyboard-arrow-right' size={35} color={COLORS.primary} />
+                <MaterialIcons onPress={() => navigation.navigate("Complaints")} name='keyboard-arrow-right' size={35} color={COLORS.primary} />
             </View>
             <Text style={Styles.heading}>Please choose complaint type</Text>
             <FlatList

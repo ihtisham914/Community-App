@@ -16,7 +16,6 @@ const StatusColor = {
 
 const SingleComplaint = ({ route }) => {
     const complaint = route.params;
-    console.log(complaint)
     return (
         <View style={Styles.container}>
             <BreadCrumb screen="Complaints" title="Complaint Details" />

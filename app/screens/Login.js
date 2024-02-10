@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
 import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, Alert, ToastAndroid } from 'react-native';
-import { SIZES, COLORS, FONT, SHADOWS } from '../constants/theme';
+import { COLORS, SHADOWS } from '../constants/theme';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useDispatch } from 'react-redux';
 import { SetUserData } from '../GlobalState/UserSlice';
 import { Feather } from '@expo/vector-icons';
 
-export const API = axios.create({ baseURL: 'https://e830-2407-d000-503-d50e-c892-7195-63c0-10f2.ngrok-free.app' });
+export const API = axios.create({ baseURL: 'https://c7d5-2407-d000-503-d50e-c892-7195-63c0-10f2.ngrok-free.app' });
 
 const Login = ({ navigation }) => {
     const dispatch = useDispatch()
@@ -39,6 +39,12 @@ const Login = ({ navigation }) => {
                 // Alert.alert('Success', `${error}`);
                 setLoading(false)
                 if (error.response) {
+                    ToastAndroid.showWithGravity(
+                        `${error}`,
+                        ToastAndroid.SHORT,
+                        ToastAndroid.CENTER,
+                    );
+
                     if (error.response.status == 404) {
                         ToastAndroid.showWithGravity(
                             'User not found 😔',
@@ -73,8 +79,8 @@ const Login = ({ navigation }) => {
             />
             <Text>Your Voice, Our Commitment</Text>
             <View style={Styles.form}>
-                <TextInput style={Styles.input} placeholder='Mobile Number' keyboardType='number-pad' onChangeText={(value) => setPhone(value)} />
-                <TextInput style={Styles.input} placeholder='Enter Password' keyboardType='ascii-capable' onChangeText={(value) => setPassword(value)} />
+                <TextInput style={Styles.input} placeholder='Mobile Number | فون نمبر' keyboardType='number-pad' onChangeText={(value) => setPhone(value)} />
+                <TextInput style={Styles.input} placeholder='Enter Password | پاس ورڈ درج کریں' keyboardType='ascii-capable' onChangeText={(value) => setPassword(value)} secureTextEntry />
 
             </View>
             <TouchableOpacity style={Styles.btn} onPress={logIn}>

@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, TextInput, ToastAndroid } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Dropdown } from 'react-native-element-dropdown';
 import { FontAwesome6 } from '@expo/vector-icons';
-import { SIZES, COLORS, FONT, SHADOWS } from '../constants/theme';
+import { COLORS, SHADOWS } from '../constants/theme';
+import { Feather } from '@expo/vector-icons';
+import { API } from './Login';
 
 const SignUP = () => {
     const navigation = useNavigation();
@@ -12,25 +14,55 @@ const SignUP = () => {
     const [password, setPassword] = useState('');
     const [confirmPass, setConfirmPass] = useState('');
     const [isFocus, setIsFocus] = useState();
-    const [city, setCity] = useState('');
+    const [WSSC_CODE, setWSSC] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const data = [
-        { label: 'Peshawar', value: 'Peshawar' },
-        { label: 'Mardan', value: 'Mardan' },
-        { label: 'Kohat', value: 'Kohat' },
+        { label: 'Peshawar', value: 'wsscp25001' },
+        { label: 'Mardan', value: 'wsscm23200' },
+        { label: 'Kohat', value: 'wssck026010' },
+        { label: 'Swat', value: 'wsscs19200' },
+        { label: 'Abbottabad', value: 'wssca22020' },
     ];
 
-    const signUP = async () => {
-        if (name == '' || phone == '' || password == '' || confirmPass == '' || city == '') {
+    const signUp = async () => {
+        setLoading(true)
+        if (name == '' || phone == '' || password == '' || confirmPass == '' || WSSC_CODE == '') {
+            ToastAndroid.showWithGravity(
+                'Please provide all the information',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+            );
+            setLoading(false)
             return;
         } else if (password !== confirmPass) {
-
-
+            ToastAndroid.showWithGravity(
+                'Passwords does not match',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+            );
+            setLoading(false)
         } else {
             // api call
+            try {
+                const res = await API.post('/api/v1/auth/signup', { name, phone, password, WSSC_CODE });
 
+                setLoading(false)
 
-            // redirect to login screen
+                ToastAndroid.showWithGravity(
+                    'Account created 🎉, Please login to continue',
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER,
+                );
+                navigation.navigate("Login");
+            } catch (error) {
+                setLoading(false)
+                ToastAndroid.showWithGravity(
+                    'Something went wrong!',
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER,
+                );
+            }
         }
     }
 
@@ -42,10 +74,10 @@ const SignUP = () => {
             />
             <Text>Your Voice, Our Commitment</Text>
             <View style={Styles.form}>
-                <TextInput style={Styles.input} placeholder='Your Name' keyboardType='name-phone-pad' onChangeText={(value) => setName(value)} />
-                <TextInput style={Styles.input} placeholder='Mobile Number' keyboardType='number-pad' onChangeText={(value) => setPhone(value)} />
-                <TextInput style={Styles.input} placeholder='Create Password' keyboardType='ascii-capable' onChangeText={(value) => setPassword(value)} />
-                <TextInput style={Styles.input} placeholder='Confirm Password' keyboardType='ascii-capable' onChangeText={(value) => setConfirmPass(value)} />
+                <TextInput style={Styles.input} placeholder='User Name | صارف نام' keyboardType='name-phone-pad' onChangeText={(value) => setName(value)} />
+                <TextInput style={Styles.input} placeholder='Mobile Number | فون نمبر' keyboardType='number-pad' onChangeText={(value) => setPhone(value)} />
+                <TextInput style={Styles.input} placeholder='Create Password | پاس ورڈ بنائیں' keyboardType='ascii-capable' onChangeText={(value) => setPassword(value)} secureTextEntry />
+                <TextInput style={Styles.input} placeholder='Confirm Password | تصدیق کریں ' keyboardType='ascii-capable' onChangeText={(value) => setConfirmPass(value)} secureTextEntry />
                 <Dropdown
                     style={[Styles.dropdown, isFocus && { borderColor: COLORS.primary }]}
                     placeholderStyle={Styles.placeholderStyle}
@@ -59,11 +91,11 @@ const SignUP = () => {
                     valueField="value"
                     placeholder={!isFocus ? 'Select item' : '...'}
                     searchPlaceholder="Search..."
-                    value={city}
+                    value={WSSC_CODE}
                     onFocus={() => setIsFocus(true)}
                     onBlur={() => setIsFocus(false)}
                     onChange={item => {
-                        setCity(item.value);
+                        setWSSC(item.value);
                         setIsFocus(false);
                     }}
                     renderLeftIcon={() => (
@@ -77,8 +109,11 @@ const SignUP = () => {
                 />
 
             </View>
-            <TouchableOpacity style={Styles.btn} onPress={() => navigation.navigate('Home'
-            )}><Text style={Styles.btnText}>Sign Up</Text></TouchableOpacity>
+            <TouchableOpacity style={Styles.btn} onPress={signUp}>
+                {
+                    !loading ? <Text style={Styles.btnText} >Sign Up</Text> : <Feather style={Styles.icon} name="loader" size={28} color='#fff' />
+                }
+            </TouchableOpacity>
             <View style={Styles.linkContainer}>
                 <Text>Already have an account?</Text>
                 <Text style={Styles.link} onPress={() => navigation.navigate("Login")}>Login</Text>
