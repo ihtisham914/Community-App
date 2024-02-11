@@ -1,25 +1,132 @@
-import React from 'react'
-import { View, Text, StyleSheet, Image, FlatList } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native'
 import BreadCrumb from './../components/BreadCrumb';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { COLORS, SIZES } from '../constants/theme';
-import { FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker'
+import DpModal from '../components/DpModal';
+import Avatar from '../components/Avatar';
+import { API } from './Login';
+import { UpdateProfileImage } from '../GlobalState/UserSlice';
+import * as ImageManipulator from 'expo-image-manipulator'
+
+
 
 const Profile = () => {
-    const { user } = useSelector((state) => state.app)
+    const { user, token } = useSelector((state) => state.app)
+    const dispatch = useDispatch();
+    const [isModal, setIsModal] = useState(false)
+    const [image, setImage] = useState()
+    const [update, setUpdate] = useState(false)
 
-    if (user)
+    if (user) {
+        const changeImage = async (mode) => {
+            setUpdate(true)
+            try {
+                let result = {};
+                if (mode == 'Gallery') {
+                    await ImagePicker.requestMediaLibraryPermissionsAsync();
+                    result = await ImagePicker.launchImageLibraryAsync({
+                        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                        allowsEditing: true,
+                        aspect: [1, 1],
+                        quality: 1
+                    })
+                } else {
+                    await ImagePicker.requestCameraPermissionsAsync();
+                    result = await ImagePicker.launchCameraAsync({
+                        cameraType: ImagePicker.CameraType.front,
+                        allowsEditing: true,
+                        aspect: [1, 1],
+                        quality: 1
+                    })
+                }
+
+
+                if (!result.canceled) {
+                    await saveImage(result.assets[0].uri);
+                }
+            } catch (error) {
+                setIsModal(false)
+                setUpdate(false)
+                ToastAndroid.showWithGravity(
+                    `Error while uploading image`,
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER,
+                )
+            }
+        }
+
+        const saveImage = async (img) => {
+            try {
+                // save image locally
+                setImage(img)
+                console.log(img)
+
+                // save image to cloundinary
+                const data = new FormData();
+                data.append("file", img);
+                data.append("upload_preset", "xguxdutu");
+                data.append("cloud_name", "dgpwe8xy6");
+                data.append("folder", "ProfilePhotos");
+                data.append("quality", "auto:good");
+
+                const response = await fetch(
+                    "https://api.cloudinary.com/v1_1/dgpwe8xy6/image/upload",
+                    {
+                        method: "post",
+                        body: data,
+                    }
+                );
+                const photo = await response.json();
+                // setProfilePhoto(photo.secure_url);
+                const updatedpic = {
+                    profile_image: photo.secure_url,
+                };
+
+                console.log(photo)
+
+                if (photo.secure_url) {
+                    // update profile image in backend
+                    const res = await API.patch(`api/v1/citizens/${user._id}`, updatedpic, {
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    })
+
+                    console.log(res.data)
+
+                    dispatch(UpdateProfileImage(res.data.updateInfo))
+                } else {
+                    ToastAndroid.showWithGravity(
+                        `Error uploading to cloudinary`,
+                        ToastAndroid.SHORT,
+                        ToastAndroid.CENTER,
+                    )
+                }
+
+                // close modal
+                setIsModal(false)
+            } catch (error) {
+                setImage(null)
+                ToastAndroid.showWithGravity(
+                    `${error}`,
+                    ToastAndroid.SHORT,
+                    ToastAndroid.CENTER,
+                )
+            }
+        }
+
+
+
         return (
             <View style={Styles.container}>
                 <BreadCrumb screen='Home' title='Profile' />
-                <View style={Styles.imgContainer}>
-                    <Image source={{ uri: user.profile_image }} style={Styles.img} />
-                    <Text style={Styles.name}>{user.name}</Text>
-                    <View style={Styles.cameraIcon}>
-                        <FontAwesome name="camera" size={20} color="#fff" />
-                    </View>
-                </View>
+
+                <Avatar uri={image} user={user} setIsModal={setIsModal} update={update} />
+
                 <View style={Styles.infoContainer}>
                     <Text style={Styles.infoLabel}>Name</Text>
                     <View style={Styles.infoInnerContainer}>
@@ -59,36 +166,15 @@ const Profile = () => {
                     <Text style={Styles.btnText}>Delete Account</Text>
                 </TouchableOpacity>
 
+                <DpModal isModal={isModal} setIsModal={setIsModal} onCameraPress={() => changeImage('')} onGalleryPress={() => changeImage('Gallery')} />
             </View>
         )
+    }
+
 }
 const Styles = StyleSheet.create({
     container: {
         margin: 12,
-    },
-    imgContainer: {
-        gap: 8,
-        alignItems: 'center',
-        position: 'relative'
-    },
-    img: {
-        height: 150,
-        width: 150,
-        borderRadius: 100,
-        objectFit: 'cover'
-    },
-    name: {
-        fontSize: SIZES.xLarge,
-        fontWeight: '700',
-        textTransform: "capitalize"
-    },
-    cameraIcon: {
-        backgroundColor: COLORS.primary,
-        borderRadius: 30,
-        padding: 8,
-        position: 'absolute',
-        bottom: "20%",
-        right: "32%",
     },
     infoContainer: {
         marginHorizontal: 44,

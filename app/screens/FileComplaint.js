@@ -1,13 +1,63 @@
-import React from 'react'
-import { View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
+import { View, Text, StyleSheet, TouchableOpacity, ToastAndroid } from 'react-native'
 import { SIZES, COLORS, SHADOWS } from '../constants/theme';
 import { FontAwesome5 } from '@expo/vector-icons';
 import { TextInput } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
+import { API } from './Login';
+import { Feather } from '@expo/vector-icons';
 
 const FileComplaint = ({ route }) => {
     const type = route.params.complaintType;
     const navigation = useNavigation()
+    const { name, _id, phone, WSSC_CODE } = useSelector((state) => state.app.user)
+    const token = useSelector((state) => state.app.token)
+    const [complaintAddress, setComplaintAddress] = useState()
+    const [complaintDes, setComplaintDes] = useState()
+    const [loading, setLoading] = useState(false)
+
+    // console.log()
+
+    const submitComplaint = async () => {
+        if (complaintAddress == '') {
+            ToastAndroid.showWithGravity(
+                'Please enter complaint address',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+            );
+            return
+        }
+        setLoading(true)
+        const complaintData = {
+            userName: name,
+            userId: _id,
+            WSSC_CODE,
+            phone: phone.toString(),
+            complaintType: type,
+            complaintAddress,
+            complaintDes,
+        };
+        try {
+            const res = API.post('/api/v1/complaints', complaintData,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                })
+            navigation.navigate("Complaints")
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            ToastAndroid.showWithGravity(
+                `${error}`,
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+            );
+        }
+    }
+
     return (
         <View style={Styles.container}>
             <View style={Styles.breadCrumb}>
@@ -22,11 +72,11 @@ const FileComplaint = ({ route }) => {
 
                 <View style={Styles.formContainer}>
                     <Text style={Styles.label}>Address</Text>
-                    <TextInput style={Styles.input} placeholder='Enter address here' />
+                    <TextInput style={Styles.input} placeholder='Enter address here' onChangeText={(value) => setComplaintAddress(value)} />
                 </View>
                 <View style={Styles.formContainer}>
                     <Text style={Styles.label}>Description</Text>
-                    <TextInput style={Styles.input} placeholder='Describe your problem' multiline={true} numberOfLines={4} />
+                    <TextInput style={Styles.input} placeholder='Describe your problem' multiline={true} numberOfLines={4} onChangeText={(value) => setComplaintDes(value)} />
                 </View>
 
                 {/* show media */}
@@ -45,8 +95,10 @@ const FileComplaint = ({ route }) => {
                 </View>
                 {/* submit button */}
                 <View style={Styles.submitContainer}>
-                    <TouchableOpacity style={Styles.btnSubmit}>
-                        <Text style={Styles.btnText}>Submit</Text>
+                    <TouchableOpacity style={Styles.btnSubmit} onPress={submitComplaint}>
+                        {
+                            !loading ? <Text style={Styles.btnText} >Submit</Text> : <Feather style={Styles.icon} name="loader" size={28} color='#fff' />
+                        }
                     </TouchableOpacity>
                 </View>
             </View>

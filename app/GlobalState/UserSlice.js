@@ -16,6 +16,9 @@ const userSlice = createSlice({
             state.wssc = action.payload.wssc;
             state.token = action.payload.token;
         },
+        UpdateProfileImage: (state, action) => {
+            state.user = action.payload
+        },
         LogOut: (state) => {
             state.user = null;
             state.wssc = null;
@@ -25,4 +28,4 @@ const userSlice = createSlice({
 })
 
 export default userSlice.reducer;
-export const { SetUserData, LogOut } = userSlice.actions
+export const { SetUserData, UpdateProfileImage, LogOut } = userSlice.actions

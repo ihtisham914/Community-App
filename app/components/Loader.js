@@ -31,7 +31,7 @@ const Loader = () => {
 
 const Styles = StyleSheet.create({
     container: {
-        height: '100%',
+        height: '70%',
         alignItems: 'center',
         justifyContent: 'center'
     },
