@@ -8,7 +8,7 @@ import { TextInput } from 'react-native-gesture-handler'
 
 
 
-const OtpModal = ({ isModal, setIsModal, confirm, setConfirm }) => {
+const OtpModal = ({ isModal, setIsModal, confirm, setConfirm, phone }) => {
     return (
         <Modal visible={isModal} onRequestClose={setIsModal} animationType='fade' transparent>
             <View style={Styles.overlay}>
