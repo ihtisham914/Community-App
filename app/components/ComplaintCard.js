@@ -17,7 +17,7 @@ const ComplaintCard = ({ complaint, index }) => {
     const navigation = useNavigation();
     const status = complaint.status?.slice(-1).pop().state;
     return (
-        <Animatable.View style={Styles.container} animation="fadeInUp" duration={1000} delay={100 * index} >
+        <Animatable.View style={Styles.container} animation="fadeInUp" duration={500} delay={100 * index} >
             <TouchableOpacity style={Styles.complaint(status)} onPress={() => navigation.navigate("SingleComplaint", complaint)}>
                 <View style={Styles.left}>
                     <Text style={Styles.heading}>{complaint.complaintType}</Text>

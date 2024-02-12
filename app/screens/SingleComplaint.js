@@ -23,10 +23,10 @@ const SingleComplaint = ({ route }) => {
             <ComplaintCard complaint={complaint} />
             <View style={Styles.timeline}>
                 <View style={Styles.line}></View>
-                <FlatList data={complaint.status} renderItem={({ item, index }) => <Animatable.View animation="fadeInRight" duration={1000} delay={100 * index} style={Styles.status(item.state)}>
+                <FlatList data={complaint.status} renderItem={({ item, index }) => <Animatable.View animation="fadeInRight" duration={500} delay={100 * index} style={Styles.status(item.state)}>
                     <View style={Styles.dot(item.state)}></View>
                     <Text style={Styles.statusText(item.state)}>{item.state}</Text>
-                    <Text style={Styles.statusDate}>{moment(item.updatedAt).format('MMMM Do YYYY, h:mm:ss a')}</Text>
+                    <Text style={Styles.statusDate}>{moment(item.updatedAt).format('MMMM Do YYYY, h:mm a')}</Text>
                 </Animatable.View>} contentContainerStyle={{ paddingVertical: 10 }} />
             </View>
         </View>

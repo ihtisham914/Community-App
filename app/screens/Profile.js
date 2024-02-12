@@ -9,7 +9,6 @@ import DpModal from '../components/DpModal';
 import Avatar from '../components/Avatar';
 import { API } from './Login';
 import { UpdateProfileImage } from '../GlobalState/UserSlice';
-import * as ImageManipulator from 'expo-image-manipulator'
 
 
 
@@ -63,6 +62,7 @@ const Profile = () => {
                 // save image locally
                 setImage(img)
                 console.log(img)
+
 
                 // save image to cloundinary
                 const data = new FormData();

@@ -6,6 +6,7 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import { COLORS, SHADOWS } from '../constants/theme';
 import { Feather } from '@expo/vector-icons';
 import { API } from './Login';
+import OtpModal from '../components/OtpModal';
 
 const SignUP = () => {
     const navigation = useNavigation();
@@ -16,6 +17,8 @@ const SignUP = () => {
     const [isFocus, setIsFocus] = useState();
     const [WSSC_CODE, setWSSC] = useState('');
     const [loading, setLoading] = useState(false);
+    const [isModal, setIsModal] = useState(false);
+    const [confirm, setConfirm] = useState(false);
 
     const data = [
         { label: 'Peshawar', value: 'wsscp25001' },
@@ -44,6 +47,9 @@ const SignUP = () => {
             setLoading(false)
         } else {
             // api call
+            setIsModal(true)
+
+            // if (confirm) {
             try {
                 const res = await API.post('/api/v1/auth/signup', { name, phone, password, WSSC_CODE });
 
@@ -63,6 +69,19 @@ const SignUP = () => {
                     ToastAndroid.CENTER,
                 );
             }
+            ToastAndroid.showWithGravity(
+                'OTP Verified',
+                ToastAndroid.SHORT,
+                ToastAndroid.CENTER,
+            );
+            // } else {
+            //     setLoading(false);
+            //     ToastAndroid.showWithGravity(
+            //         'Wrong OTP, please enter again',
+            //         ToastAndroid.SHORT,
+            //         ToastAndroid.CENTER,
+            //     );
+            // }
         }
     }
 
@@ -118,6 +137,7 @@ const SignUP = () => {
                 <Text>Already have an account?</Text>
                 <Text style={Styles.link} onPress={() => navigation.navigate("Login")}>Login</Text>
             </View>
+            {/* <OtpModal confirm={confirm} setConfirm={setConfirm} isModal={isModal} setIsModal={setIsModal} /> */}
         </View>
     )
 }

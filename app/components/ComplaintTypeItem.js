@@ -12,7 +12,7 @@ const ComplaintTypeItem = ({ complaintType, index }) => {
     const navigation = useNavigation();
 
     return (
-        <Animatable.View animation="zoomIn" duration={1000} delay={100 * index} style={Styles.container}>
+        <Animatable.View animation="zoomIn" duration={500} delay={100 * index} style={Styles.container}>
             <TouchableOpacity style={[Styles.typeContainer, complaintType.id == 5 && Styles.centeredItem]} onPress={() => navigation.navigate("FileComplaint", complaintType)}>
                 <Image style={Styles.img} source={complaintType.img} />
                 <Text style={Styles.text}>{complaintType.name}</Text>
