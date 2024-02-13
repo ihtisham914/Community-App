@@ -9,6 +9,7 @@ import DpModal from '../components/DpModal';
 import Avatar from '../components/Avatar';
 import { API } from './Login';
 import { UpdateProfileImage } from '../GlobalState/UserSlice';
+import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
 
 
 
@@ -42,9 +43,11 @@ const Profile = () => {
                     })
                 }
 
-
+                setIsModal(false);
                 if (!result.canceled) {
                     await saveImage(result.assets[0].uri);
+                } else {
+                    setUpdate(false)
                 }
             } catch (error) {
                 setIsModal(false)
@@ -60,13 +63,20 @@ const Profile = () => {
         const saveImage = async (img) => {
             try {
                 // save image locally
-                setImage(img)
-                console.log(img)
+                const manipResult = await manipulateAsync(
+                    img, [],
+                    { base64: true }
+                );
 
+                const uriArr = manipResult.uri.split('.');
+                const fileType = uriArr[uriArr.length - 1]
+                const file = `data:${fileType};base64,${manipResult.base64}`
+
+                setImage(manipResult.uri);
 
                 // save image to cloundinary
                 const data = new FormData();
-                data.append("file", img);
+                data.append("file", file);
                 data.append("upload_preset", "xguxdutu");
                 data.append("cloud_name", "dgpwe8xy6");
                 data.append("folder", "ProfilePhotos");
@@ -85,7 +95,6 @@ const Profile = () => {
                     profile_image: photo.secure_url,
                 };
 
-                console.log(photo)
 
                 if (photo.secure_url) {
                     // update profile image in backend
@@ -96,8 +105,6 @@ const Profile = () => {
                         },
                     })
 
-                    console.log(res.data)
-
                     dispatch(UpdateProfileImage(res.data.updateInfo))
                 } else {
                     ToastAndroid.showWithGravity(
@@ -107,8 +114,7 @@ const Profile = () => {
                     )
                 }
 
-                // close modal
-                setIsModal(false)
+                setUpdate(false)
             } catch (error) {
                 setImage(null)
                 ToastAndroid.showWithGravity(
