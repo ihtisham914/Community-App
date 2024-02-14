@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { SetUserData } from '../GlobalState/UserSlice';
 import { Feather } from '@expo/vector-icons';
 
-export const API = axios.create({ baseURL: 'https://71d5-2407-d000-503-b13a-7c12-7c18-1dc9-6ffe.ngrok-free.app' });
+export const API = axios.create({ baseURL: 'https://e3ac-2407-d000-503-e0ce-bcd5-ff72-8531-e2a.ngrok-free.app' });
 
 const Login = ({ navigation }) => {
     const dispatch = useDispatch()

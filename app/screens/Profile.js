@@ -8,8 +8,9 @@ import * as ImagePicker from 'expo-image-picker'
 import DpModal from '../components/DpModal';
 import Avatar from '../components/Avatar';
 import { API } from './Login';
-import { UpdateProfileImage } from '../GlobalState/UserSlice';
-import { manipulateAsync, FlipType, SaveFormat } from 'expo-image-manipulator';
+import { UpdateUserData } from '../GlobalState/UserSlice';
+import { manipulateAsync } from 'expo-image-manipulator';
+import EditModal from '../components/EditModal';
 
 
 
@@ -19,6 +20,9 @@ const Profile = () => {
     const [isModal, setIsModal] = useState(false)
     const [image, setImage] = useState()
     const [update, setUpdate] = useState(false)
+    const [isEdit, setIsEdit] = useState(false)
+    const [value, setValue] = useState()
+    const [label, setLabel] = useState()
 
     if (user) {
         const changeImage = async (mode) => {
@@ -105,7 +109,7 @@ const Profile = () => {
                         },
                     })
 
-                    dispatch(UpdateProfileImage(res.data.updateInfo))
+                    dispatch(UpdateUserData(res.data.updateInfo))
                 } else {
                     ToastAndroid.showWithGravity(
                         `Error uploading to cloudinary`,
@@ -137,7 +141,11 @@ const Profile = () => {
                     <Text style={Styles.infoLabel}>Name</Text>
                     <View style={Styles.infoInnerContainer}>
                         <Text style={Styles.infoText}>{user.name}</Text>
-                        <MaterialCommunityIcons name='account-edit' size={25} color={COLORS.primary} />
+                        <MaterialCommunityIcons name='account-edit' size={25} color={COLORS.primary} onPress={() => {
+                            setValue(user.name)
+                            setIsEdit(true)
+                            setLabel('name')
+                        }} />
                     </View>
                 </View>
 
@@ -152,15 +160,23 @@ const Profile = () => {
                 <View style={Styles.infoContainer}>
                     <Text style={Styles.infoLabel}>Email</Text>
                     <View style={Styles.infoInnerContainer}>
-                        <Text style={Styles.infoText}>{user.email}</Text>
-                        <MaterialCommunityIcons name='account-edit' size={25} color={COLORS.primary} />
+                        <Text style={Styles.infoText}>{user.email ? user.email : 'Email goes here'}</Text>
+                        <MaterialCommunityIcons name='account-edit' size={25} color={COLORS.primary} onPress={() => {
+                            setValue(user.email || 'Email goes here')
+                            setIsEdit(true)
+                            setLabel('email')
+                        }} />
                     </View>
                 </View>
                 <View style={Styles.infoContainer}>
                     <Text style={Styles.infoLabel}>Address</Text>
                     <View style={Styles.infoInnerContainer}>
-                        <Text style={Styles.infoText}>{user.address}</Text>
-                        <MaterialCommunityIcons name='account-edit' size={25} color={COLORS.primary} />
+                        <Text style={Styles.infoText}>{user.address ? user.address : 'Your address goes here'}</Text>
+                        <MaterialCommunityIcons name='account-edit' size={25} color={COLORS.primary} onPress={() => {
+                            setValue(user.address || 'Your address goes here')
+                            setIsEdit(true)
+                            setLabel('address')
+                        }} />
                     </View>
                 </View>
 
@@ -173,6 +189,8 @@ const Profile = () => {
                 </TouchableOpacity>
 
                 <DpModal isModal={isModal} setIsModal={setIsModal} onCameraPress={() => changeImage('')} onGalleryPress={() => changeImage('Gallery')} />
+
+                <EditModal isEdit={isEdit} setIsEdit={setIsEdit} value={value} label={label} />
             </View>
         )
     }

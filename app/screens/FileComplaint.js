@@ -80,6 +80,7 @@ const FileComplaint = ({ route }) => {
                 </View>
 
                 {/* show media */}
+                <Text style={Styles.labelA}>Attachments</Text>
                 <View style={Styles.mediaContainer}>
 
                 </View>
@@ -148,8 +149,12 @@ const Styles = StyleSheet.create({
         borderRadius: 8,
         ...SHADOWS.small,
     },
+    labelA: {
+        marginTop: 18,
+        fontSize: SIZES.large
+    },
     mediaContainer: {
-        marginTop: 24,
+        marginTop: 4,
         backgroundColor: '#fff',
         padding: 12,
         borderRadius: 12,
@@ -169,7 +174,7 @@ const Styles = StyleSheet.create({
         paddingVertical: 6,
         paddingHorizontal: 14,
         alignItems: 'center',
-        borderRadius: 12,
+        borderRadius: 8,
     },
     btnSubmit: {
         backgroundColor: COLORS.primary,
