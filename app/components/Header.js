@@ -1,22 +1,29 @@
-import { TouchableOpacity } from 'react-native'
-import { View, Text, StyleSheet, Image, ToastAndroid } from 'react-native'
+import { useState } from 'react'
+import { View, Text, StyleSheet, Image, ToastAndroid, TouchableOpacity } from 'react-native'
 import { FontAwesome6 } from '@expo/vector-icons'
-import { COLORS, SIZES } from '../constants/theme'
+import { COLORS, SIZES, SHADOWS } from '../constants/theme'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useDispatch, useSelector } from 'react-redux'
 import { LogOut } from '../GlobalState/UserSlice'
 import { FontAwesome } from '@expo/vector-icons'
+import * as Animatable from 'react-native-animatable'
+import { Feather } from '@expo/vector-icons'
+import { useNavigation } from '@react-navigation/native'
+
 
 const Header = () => {
     const dispatch = useDispatch()
     const { wssc, user } = useSelector((state) => state.app)
+    const [isMenuOpen, setIsMenuOpen] = useState(false)
+    const navigation = useNavigation()
 
     const logOut = () => {
         AsyncStorage.removeItem('user');
         AsyncStorage.removeItem('wssc');
         AsyncStorage.removeItem('token');
         dispatch(LogOut())
+        setIsMenuOpen(false)
 
         ToastAndroid.showWithGravity(
             'Logged out successfully',
@@ -32,12 +39,29 @@ const Header = () => {
             </View>
             <View style={Styles.iconContainer}>
                 <FontAwesome6 name="bell" size={25} color={COLORS.feedbackColor} />
-                <TouchableOpacity onPress={logOut}>
+                <TouchableOpacity onPress={() => setIsMenuOpen(!isMenuOpen)}>
                     {
                         user.profile_image ? <Image style={Styles.img} source={{ uri: user.profile_image }} /> : <FontAwesome name='user-circle' size={35} color={COLORS.primary} />
                     }
                 </TouchableOpacity>
             </View>
+            {isMenuOpen && <Animatable.View animation="fadeIn" duration={500} style={Styles.menu}>
+                <View style={Styles.profile}>
+                    <Image source={user.profile_image ? { uri: user.profile_image } : require('../../assets/Logo.png')} style={Styles.imgProfile} />
+                    <Text style={Styles.name}>{user.name}</Text>
+                </View>
+                <TouchableOpacity style={Styles.items} onPress={() => {
+                    navigation.navigate("Profile");
+                    setIsMenuOpen(false)
+                }}>
+                    <Feather name='settings' size={20} color={COLORS.primary} />
+                    <Text style={Styles.item}>Settings</Text>
+                </TouchableOpacity>
+                <Text style={Styles.logout} onPress={() => {
+                    setIsMenuOpen(false)
+                    logOut();
+                }}>Logout</Text>
+            </Animatable.View>}
         </SafeAreaView>
     )
 }
@@ -61,6 +85,7 @@ const Styles = StyleSheet.create({
         shadowOpacity: 0.25,
         shadowRadius: 5.84,
         elevation: 5,
+        position: 'relative'
     },
     logoName: {
         fontSize: SIZES.large,
@@ -75,6 +100,54 @@ const Styles = StyleSheet.create({
         height: 35,
         width: 35,
         borderRadius: 30,
+    },
+    imgProfile: {
+        height: 25,
+        width: 25,
+        borderRadius: 30,
+    },
+    menu: {
+        position: 'absolute',
+        padding: 14,
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        top: 80,
+        right: 12,
+        gap: 12,
+        width: 180,
+        ...SHADOWS.medium
+    },
+    profile: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10
+
+    },
+    items: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 10,
+        paddingBottom: 10,
+        borderBottomColor: '#eee',
+        borderBottomWidth: 1,
+        marginBottom: 10
+    },
+    name: {
+        fontSize: SIZES.medium,
+        fontWeight: '500'
+
+    },
+    item: {
+        fontSize: SIZES.medium,
+    },
+    logout: {
+        color: '#fff',
+        backgroundColor: COLORS.closedColor,
+        width: 'fit-content',
+        paddingVertical: 4,
+        paddingHorizontal: 8,
+        borderRadius: 10,
+        width: 65,
     }
 })
 
